@@ -101,3 +101,53 @@ private tNode deleteNode(tNode node){
 
     return node;
 }
+private tNode findMin(tNode node){
+    while (node.left != null) {
+        node = node.left;
+    }
+    return node;
+}
+private tNode deleteNodeRec(tNode root, int value){
+    if (root == null) {
+        return null;
+    }
+
+    if (value < root.data) {
+        root.left = deleteNodeRec(root.left, value);
+    } else if (value > root.data) {
+        root.right = deleteNodeRec(root.right, value);
+    } else {
+        // Found the node to delete
+        if (root.left == null) {
+            return root.right;
+        } else if (root.right == null) {
+            return root.left;
+        }
+
+        tNode successor = findMin(root.right);
+        root.data = successor.data;
+        root.right = deleteNodeRec(root.right, successor.data);
+    }
+
+    return root;
+}
+//Reset tree
+public void reset() {
+    root = null;
+}
+// For debugging - inorder traversal
+public void inorder() {
+    inorderRec(root);
+    System.out.println();
+}
+private void inorderRec(tNode root) {
+    if (root != null) {
+        inorderRec(root.left);
+        System.out.print(root.data + " ");
+        inorderRec(root.right);
+    }
+}
+// count nodes (for verification)
+public int countNodes() {
+    return countNodesRec(root);
+}
