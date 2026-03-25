@@ -213,4 +213,126 @@ public class tryBST{
 
         return calculateStatistics(times);
     }
+    private static TimingResult measureDeleteTime(int numKeys, int repetitions){
+        long[] times = new long[repetitions];
+
+        for (int i = 0; i < repetitions; i++) {
+            BinarySearchTree tree = new BinarySearchTree();
+            int[] numbers = generateSortedNumbers(numKeys);
+            tree.buildPerfectBST(numbers, 0, numbers.length - 1);
+
+            long startTime = System.nanoTime();
+            tree.deleteEvenNumbers();
+            long endTime = System.nanoTime();
+
+            times[i] = (endTime - startTime) / 1000000; // Convert to milliseconds
+        }
+
+        return calculateStatistics(times);
+    }
+    private static void testWithSmallN(){
+        System.out.println("\n=== TESTING WITH SMALL n VALUES ===");
+        System.out.println("Verifying tree construction and deletion...\n");
+
+        int[] testValues = {2, 3, 4}; // n = 2, 3, 4
+
+        for (int n : testValues) {
+            int numKeys = (int) Math.pow(2, n) - 1;
+            System.out.println("Testing with n = " + n + " (keys: 1 to " + numKeys + ")");
+
+            BinarySearchTree tree = new BinarySearchTree();
+            int[] numbers = generateSortedNumbers(numKeys);
+
+            // Build tree
+            tree.buildPerfectBST(numbers, 0, numbers.length - 1);
+
+            // Check if BST
+            boolean isBST = tree.isBST();
+            System.out.println("  Is BST? " + isBST);
+
+            // Count nodes before deletion
+            int nodeCountBefore = tree.countNodes();
+            System.out.println("  Nodes before deletion: " + nodeCountBefore);
+
+            // Delete even numbers
+            tree.deleteEvenNumbers();
+
+            // Count nodes after deletion
+            int nodeCountAfter = tree.countNodes();
+            System.out.println("  Nodes after deletion: " + nodeCountAfter);
+
+            // Expected: all odd numbers remain
+            int expectedCount = (numKeys + 1) / 2;
+            System.out.println("  Expected nodes after deletion: " + expectedCount);
+            System.out.println("  Verification: " + (nodeCountAfter == expectedCount ? "PASSED" : "FAILED"));
+            System.out.println();
+        }
+    }
+   public static void main(String[] args){
+       System.out.println("Practical 7: Perfect Binary Search Tree with Even Number Deletion");
+       System.out.println("============================================================\n");
+       // First test with small values to verify correctness
+       testWithSmallN();
+       //Determine appropriate n to get times > 1000 ms
+       System.out.println("=== PERFORMANCE TESTING ===");
+       System.out.println("Finding appropriate n to achieve times > 1000ms...\n");
+
+       int repetitions = 30;
+       int[] nCandidates = {10, 12, 14, 16, 18, 20};
+       int selectedN = 0;
+
+       for (int n : nCandidates) {
+           int numKeys = (int) Math.pow(2, n) - 1;
+           System.out.print("Testing n = " + n + " (" + numKeys + " keys)... ");
+
+           // Quick test with 5 repetitions to estimate time
+           BinarySearchTree tree = new BinarySearchTree();
+           int[] numbers = generateSortedNumbers(numKeys);
+
+           long startTime = System.currentTimeMillis();
+           tree.buildPerfectBST(numbers, 0, numbers.length - 1);
+           long buildTime = System.currentTimeMillis() - startTime;
+           if (buildTime > 1000) {
+               selectedN = n;
+               System.out.println("build time = " + buildTime + "ms (EXCEEDS 1000ms)");
+               break;
+           } else {
+               System.out.println("build time = " + buildTime + "ms");
+           }
+       }
+       if (selectedN == 0) {
+           selectedN = 20;
+           System.out.println("\nUsing maximum n = 20 for final testing");
+       }
+       int numKeys = (int) Math.pow(2, selectedN) - 1;
+       System.out.println("\n=== FINAL RESULTS ===");
+       System.out.println("Using n = " + selectedN + " with " + numKeys + " keys");
+       System.out.println("Running " + repetitions + " repetitions for accurate statistics...\n");
+
+       // Measure populate time
+       System.out.println("Measuring populate tree time...");
+       TimingResult populateResult = measurePopulateTime(numKeys, repetitions);
+
+       // Measure delete time
+       System.out.println("Measuring delete even numbers time...");
+       TimingResult deleteResult = measureDeleteTime(numKeys, repetitions);
+
+       // Displaying results in table format
+       System.out.println("\n");
+       System.out.println("+------------------------+---------------------+------------------------+------------------------+");
+       System.out.println("| Method                 | Number of keys n    | Average time in ms    | Standard Deviation     |");
+       System.out.println("+------------------------+---------------------+------------------------+------------------------+");
+       System.out.printf("| %-22s | %,19d | %22.2f | %22.2f |\n",
+               "Populate tree", numKeys, populateResult.average, populateResult.stdDev);
+       System.out.printf("| %-22s | %,19d | %22.2f | %22.2f |\n",
+               "Remove evens from tree", numKeys, deleteResult.average, deleteResult.stdDev);
+       System.out.println("+------------------------+---------------------+------------------------+------------------------+");
+       // Verify that average times exceed 1000ms
+       if (populateResult.average >= 1000 || deleteResult.average >= 1000) {
+           System.out.println("\n✓ SUCCESS: Average times meet the requirement (>1000ms)");
+       } else {
+           System.out.println("\n⚠ WARNING: Average times are below 1000ms. Consider increasing n further.");
+       }
+
+    }
 }
