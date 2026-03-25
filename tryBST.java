@@ -297,7 +297,7 @@ public class tryBST{
            long buildTime = System.currentTimeMillis() - startTime;
            if (buildTime > 1000) {
                selectedN = n;
-               System.out.println("build time = " + buildTime + "ms (EXCEEDS 1000ms)");
+               System.out.println("build time = " + buildTime + "ms (EXCEEDS 1000ms(1 second)");
                break;
            } else {
                System.out.println("build time = " + buildTime + "ms");
@@ -330,9 +330,9 @@ public class tryBST{
        System.out.printf("| %-22s | %,19d | %22.2f | %22.2f |\n",
                "Remove evens from tree", numKeys, deleteResult.average, deleteResult.stdDev);
        System.out.println("+------------------------+---------------------+------------------------+------------------------+");
-       // Verify that average times exceed 1000ms
+       // Verify that average times exceed 1000ms (1 second)
        if (populateResult.average >= 1000 || deleteResult.average >= 1000) {
-           System.out.println("\n✓ SUCCESS: Average times meet the requirement (>1000ms)");
+           System.out.println("\n✓ SUCCESS: Average times meet the requirement (>1000ms(1 second)");
        } else {
            System.out.println("\n⚠ WARNING: Average times are below 1000ms. Consider increasing n further.");
        }
