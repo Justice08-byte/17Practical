@@ -32,3 +32,19 @@ private tNode insertRec(tNode root, int value){
 
     return root;
 }
+// Check if tree is BST
+public boolean isBST(){
+    return isBSTRec(root, Integer.MIN_VALUE, Integer.MAX_VALUE);
+}
+private boolean isBSTRec(tNode node, int min, int max){
+    if (node == null) {
+        return true;
+    }
+
+    if (node.data < min || node.data > max) {
+        return false;
+    }
+
+    return isBSTRec(node.left, min, node.data - 1) &&
+            isBSTRec(node.right, node.data + 1, max);
+}
