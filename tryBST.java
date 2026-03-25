@@ -1,15 +1,18 @@
 import java.util.Random;
 
-class tNode {
+ class tNode {
     int data;
     tNode left, right;
+    public tNode(int data){
+        this.data = data;
+        this.left = null;
+        this.right = null;
+    }
+
+
 }
-public tNode(int data){
-    this.data = data;
-    this.left = null;
-    this.right = null;
-}
-class BinarySearchTree{
+
+ class BinarySearchTree{
     private tNode root;
 
 public BinarySearchTree() {
@@ -301,7 +304,7 @@ public class tryBST{
            }
        }
        if (selectedN == 0) {
-           selectedN = 20;
+           selectedN = 24;
            System.out.println("\nUsing maximum n = 20 for final testing");
        }
        int numKeys = (int) Math.pow(2, selectedN) - 1;
