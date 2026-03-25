@@ -48,3 +48,56 @@ private boolean isBSTRec(tNode node, int min, int max){
     return isBSTRec(node.left, min, node.data - 1) &&
             isBSTRec(node.right, node.data + 1, max);
 }
+// Build perfect BST using divide and conquer
+public void buildPerfectBST(int[] numbers, int start, int end) {
+    if (start > end) {
+        return;
+    }
+
+    int mid = start + (end - start) / 2;
+    insert(numbers[mid]);
+
+    buildPerfectBST(numbers, start, mid - 1);
+    buildPerfectBST(numbers, mid + 1, end);
+}
+// Delete nodes with even values
+public void deleteEvenNumbers(){
+    root = deleteEvenRec(root);
+}
+private tNode deleteEvenRec(tNode node){
+    if (node == null) {
+        return null;
+    }
+
+    node.left = deleteEvenRec(node.left);
+    node.right = deleteEvenRec(node.right);
+
+    if (node.data % 2 == 0) {
+        return deleteNode(node);
+    }
+
+    return node;
+}
+private tNode deleteNode(tNode node){
+    // Case 1: Leaf node
+    if (node.left == null && node.right == null) {
+        return null;
+    }
+
+    // Case 2: Only right child
+    if (node.left == null) {
+        return node.right;
+    }
+
+    // Case 3: Only left child
+    if (node.right == null) {
+        return node.left;
+    }
+
+    // Case 4: Two children - find inorder successor
+    tNode successor = findMin(node.right);
+    node.data = successor.data;
+    node.right = deleteNodeRec(node.right, successor.data);
+
+    return node;
+}
